@@ -1,0 +1,17 @@
+#!/bin/sh
+
+echo "Click on Pidgin conversation window"
+id=$(xdotool selectwindow)
+
+if [ -z $1 ]; then
+    echo "Nudge how many times?"
+    read -r repeat
+else
+    repeat="$1"
+fi
+
+for i in $(seq $repeat); do
+    xdotool key --window "$id" alt+c a
+    sleep .5s
+done
+

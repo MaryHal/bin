@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+import os
+import sys
+
+packageString = ''
+
+def queryPackage(package):
+    os.system("pacman -Qi " + package)
+
+def removePackage(package):
+    print ("Command: sudo pacman -Rsn " + package)
+    os.system("sudo pacman -Rsn " + package)
+
+# Generate a list of packages we would maybe like to uninstall
+os.system("pacman -Qetq > /tmp/explicit_packages")
+packageString = "/tmp/explicit_packages"
+
+# Open the file and ask to uninstall each
+file = open(packageString, 'r')
+for package in file:
+    queryPackage(package)
+
+    # Get user input to see if they want to uninstall it
+    choice = input("uninstall(y/n/q)? ")
+
+    # Yes, we want to uninstall
+    if choice == 'y' or choice == 'Y':
+        removePackage(package)
+
+    if choice == 'q' or choice == 'Q':
+        break
+
+    print ("\n==================================================\n")
+file.close()
+

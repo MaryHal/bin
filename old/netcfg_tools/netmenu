@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if [ -f $HOME/.dmenurc ]; then
+  . $HOME/.dmenurc
+else
+  DMENU='dmenu -i'
+fi
+
+#CANONICAL="$(readlink -f "$0")"     # Handle symlinks
+#BASE="$(dirname "$CANONICAL")"
+#
+# Imports:
+#. "/home/sanford/bin/lib/rootCheck.sh"
+#
+#rootCheck
+
+netchoices=$(ls /etc/network.d/ -1Ap | ack -v \/)
+other="
+[ListWirelessNetworks]
+[CreateProfile]"
+
+choice="$(echo "$netchoices $other" | $DMENU -p "Connect To: ")"
+[ -z "$choice" ] && exit
+
+if [[ "$choice" == "[ListWirelessNetworks]" ]]; then
+    sudo ifconfig eth1 up
+    sudo iwlist eth1 scan | ~/bin/nethelper
+else
+    sudo netcfg -a
+    sudo netcfg "$choice"
+fi
+
+

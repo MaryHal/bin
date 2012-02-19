@@ -1,0 +1,54 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use File::Basename;
+use File::Copy;
+
+sub trim($)
+{
+	my $string = shift;
+	$string =~ s/^\s+//;
+	$string =~ s/\s+$//;
+	return $string;
+}
+
+sub killUseless($)
+{
+    my $string = shift;
+    $string =~ tr/[\"\'?\!\~\$]//d;
+    return $string;
+}
+
+sub translate($)
+{
+    my $string = shift;
+    $string =~ s/[ -]//g; 
+    $string =~ s/^_|_$//g;
+    $string =~ s/_+//g;
+    return $string;
+}
+
+foreach (@ARGV) 
+{
+    my($old, $directory) = fileparse($_);
+
+    my $new = trim($old);
+    $new = killUseless($new);
+    $new = translate($new);
+
+    print "$directory$old -> $directory$new\n";
+
+    if (-e $_)
+    {
+        print "Move?(y/n) ";
+        my $accept = <>;
+
+        if ($accept eq 'y')
+        {
+            move("$directory$old", "$directory$new");
+        }
+    }
+};
+

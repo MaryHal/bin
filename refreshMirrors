@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [[ ${UID} -ne 0 ]] ; then
+	echo "You must be root to update pacman's mirrorlist."
+	exit 1
+fi
+
+(curl -s "https://www.archlinux.org/mirrorlist/?country=all&protocol=ftp&ip_version=4&use_mirror_status=on" | \
+sed s/#Server/Server/g) > /etc/pacman.d/mirrorlist
+pacman -Syy
+

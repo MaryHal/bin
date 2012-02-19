@@ -1,0 +1,9 @@
+Re: Post your handy self made command line utilities
+
+I put that in my /etc/rc.local.shutdown to wake up my PC everyday at 7am :
+
+# Automatic wakeup
+D=`date --date=7 +%s` && [ $D -lt `date +%s` ] && D=`date --date='tomorrow 7' +%s`
+echo 0 > /sys/class/rtc/rtc0/wakealarm && echo $D > /sys/class/rtc/rtc0/wakealarm
+
+

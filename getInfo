@@ -1,0 +1,65 @@
+#!/bin/sh
+
+ICONPATH="$HOME/.icons/"
+COLOR_ICON="#6e9bcf"
+CRIT_COLOR="#ff2c4a"
+#DZEN_FG="#333333"
+DZEN_FG="#000000"
+DZEN_BG="#fbfbfb"
+HEIGHT=50
+WIDTH=256
+#RESOLUTIONW=`xrandr | grep -r "current" | awk '{print $8}'` 
+#RESOLUTIONH=`xrandr | grep -r "current" | awk '{print $10}' | tr -d ','`
+#X=$(($RESOLUTIONW-$WIDTH))
+#Y=$(($RESOLUTIONH-$HEIGHT-1))
+X=0
+Y=0
+BAR_FG="#333333"
+BAR_BG="#808080"
+BAR_H=10
+BAR_W=60
+FONT="Droid Sans:bold:size=8"
+SLEEP=1
+VUP="amixer -c0 -q set Master 4dB+"
+VDOWN="amixer -c0 -q set Master 4dB-"
+#DZEN="dzen2 -x $X -y $Y -tw $WIDTH -w $WIDTH -h $HEIGHT -fn $FONT -bg $DZEN_BG -fg $DZEN_FG"
+DZEN="dzen2 -l 4 -x $X -y $Y -w $WIDTH -h $HEIGHT -bg $DZEN_BG -fg $DZEN_FG"
+
+SLEEPTIME="2"
+
+#Probably do not customize
+PIPE="/tmp/statpipe"
+
+Vol ()
+{
+	ONF=$(amixer get Master | awk '/Front\ Left:/ {print $7}' | tr -d '[]')
+	VOL=$(amixer get Master | awk '/Front\ Left:/ {print $5}' | tr -d '[]%')
+		if [[ ${ONF} == 'off' ]] ; then
+		   echo -n "^fg($CRIT_COLOR)^i($ICONPATH/spkr_01.xbm)^fg()" $(echo "0"  | gdbar -fg $BAR_FG -bg $BAR_BG -h $BAR_H -w $BAR_W -s o -ss 1 -sw 2 -nonl)
+		else
+		   echo -n "^fg($COLOR_ICON)^i($ICONPATH/spkr_01.xbm)^fg()" ${VOL} $(echo $VOL | gdbar -fg $BAR_FG -bg $BAR_BG -h $BAR_H -w $BAR_W -s o -ss 1 -sw 2 -nonl)
+		fi
+    return
+}
+
+Print () {
+        echo "Hello World"
+        echo "Hi"
+    return
+}
+
+#Using named pipe to determine whether previous call still exists
+#Also prevents instances
+if [ ! -e "$PIPE" ]; then
+  mkfifo "$PIPE"
+  #(dzen2 -tw "$WIDTH" -h "$HEIGHT" -x "$XPOS" -y "$YPOS" -fn "$FONT" -bg "$BG" -fg "$FG" < "$PIPE" 
+  # rm -f "$PIPE") &
+  ($DZEN < "$PIPE" 
+  rm -f "$PIPE") &
+fi
+
+#Feed the pipe!
+#(echo "Hello World!" | $DZEN ; sleep "$SLEEPTIME") > "$PIPE"
+#((Print ; sleep "$SLEEPTIME") | $DZEN ) > "$PIPE"
+(Print ; sleep "$SLEEPTIME") > "$PIPE"
+

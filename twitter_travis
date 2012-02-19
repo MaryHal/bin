@@ -1,0 +1,4 @@
+#!/bin/bash
+
+curl -s http://twitter.com/statuses/user_timeline/52996298.rss | perl -lne 'print "$1" if m,<description>(.*?)</description>,' 
+

@@ -1,0 +1,21 @@
+#! /bin/sh
+# findit.sh -- simple search script by Luke - 07Feb2005
+#
+_findit() {
+	find . -name "*$_expr*"
+}
+#
+echo "Enter search pattern: \c"
+read _expr
+#
+if [ "$_expr" = "" ]; then
+ echo "Do you REALLY want to list ALL the files? [y/n] \c"
+ read _list
+   if [ "$_list" = y ]; then
+    _findit
+   else
+    exit
+  fi
+fi
+#
+_findit

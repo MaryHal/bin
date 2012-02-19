@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Soft Reboot
+# Works with Arch Linux default initscripts.
+#
+
+/sbin/poweroff ()
+{
+    /etc/rc.sysinit
+    init 3
+}
+
+. /etc/rc.shutdown

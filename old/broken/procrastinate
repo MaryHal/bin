@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+import time
+import os
+import sys
+import pexpect
+ 
+MINUTE    = 60
+ 
+CYCLES    = 5
+WORK      = 10
+PAUSE     = 2
+EMPTY     = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+ 
+BEEP      = "beep"
+DZEN      = 'dzen2 -ta 1 -tw 190 -fg %s -bg %s'
+ 
+PAUSE_FG  = "black"
+PAUSE_BG  = "green"
+PROGRESS  = "^fg(%s)^bg(%s)Cycle %d/%d: "
+RECT      = "^r(6x6)^p(1)"
+RECT_OUTL = "^ro(6x6)^p(1)"
+SET_FG    = "^fg(%s)"
+WORK_BG   = "black"
+WORK_FG   = "yellow"
+ 
+class TenTwoFive:
+ 
+    def __init__(self):
+        self.dzen = pexpect.spawn(DZEN % (WORK_FG, WORK_BG))
+    # end def __init__
+ 
+    def show_work_time(self):
+        for current_minute in range(WORK):
+            self.minutes[current_minute] = 1
+            self.progress = self._progress_for_cycle()
+            self._add_rectangles(0, WORK)
+            self._set_pause_color()
+            for minute in range(WORK + 1, WORK + PAUSE + 1):
+                self.progress += RECT_OUTL
+            self.dzen.sendline(self.progress)
+            sys.stdout.flush()
+            time.sleep(MINUTE)
+ 
+    def show_pause_time(self):
+        for current_minute in range(WORK, WORK + PAUSE):
+            self.minutes[current_minute] = 1
+            self.progress = self._progress_for_cycle()
+            for minute in range(WORK):
+                self.progress += RECT
+            self._set_pause_color()
+            self._add_rectangles(WORK, WORK + PAUSE)
+            self.dzen.sendline(self.progress)
+            sys.stdout.flush()
+            time.sleep(MINUTE)
+ 
+    def __call__(self):
+        try:
+            for self.cycle in range(CYCLES):
+                self.minutes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                self.show_work_time()
+                os.system(BEEP)
+                self.show_pause_time()
+                os.system(BEEP)
+        except KeyboardInterrupt:
+            raise SystemExit
+ 
+    def _add_rectangles(self, start, end):
+        for minute in range(start, end):
+            if self.minutes[minute]:
+                self.progress += RECT
+            else:
+                self.progress += RECT_OUTL
+ 
+    def _progress_for_cycle(self):
+        return PROGRESS % (WORK_FG, WORK_BG, self.cycle + 1, CYCLES)
+ 
+    def _set_pause_color(self):
+        self.progress += SET_FG % PAUSE_BG
+ 
+ 
+if __name__ == "__main__" :
+    ttf = TenTwoFive ()
+    ttf ()

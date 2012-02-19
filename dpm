@@ -1,0 +1,5 @@
+#!/bin/bash
+
+find /sys/devices/pci* -path "*power/control" -exec \
+  bash -c "echo -n '{}' = && cat '{}' && echo auto > '{}' && echo -n '{}' = && cat '{}'" \;
+

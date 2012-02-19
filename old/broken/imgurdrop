@@ -1,0 +1,7 @@
+#!/bin/bash
+
+function uploadImage {
+    curl -s -F "image=@$1" -F "key=486690f872c678126a2c09a9e196ce1b" http://imgur.com/api/upload.xml | perl -lne 'print $1 if m{<original_image>(.+)</original_image>}'
+}
+
+uploadImage "$1" | xclip -selection c

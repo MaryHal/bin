@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use strict;
+
+my $language = "en";
+my $phrase = "Hello World";
+
+if ($ARGV[0] =~ m/-\w\w/)
+{
+    $language = shift;    
+    $language = substr($language, 1, length($language));
+}
+
+$phrase = queryStringEncode(shift);
+
+print "$language $phrase";
+
+system("curl -A 'Mozilla' 'http://translate.google.com/translate_tts?tl=$language&q=$phrase' > /tmp/hello.mp3");
+system("mplayer /tmp/hello.mp3");
+unlink("/tmp/hello.mp3");
+
+sub queryStringEncode
+{
+    my $_ = @_[0];
+	s/\'/\&\#39\;/g;        #Apostrophe
+    s/ /\+/g;
+    return $_;
+}
+

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+saveIFS=$IFS
+IFS=$'\n'
+declare -a ids=( $(curl -Ls "$1" | awk -F'"' 'BEGIN {RS = ","} /"t":|"video_id":/ {print $4}') )
+IFS=$saveIFS
+
+t=${ids[0]}
+video_id=${ids[1]}
+
+mplayer -cache 256 "http://www.youtube.com/get_video?video_id=${video_id}&t=${t}"
+
+#mplayer -cache 256 $(~/bin/youtube-dl -bg $1)
+

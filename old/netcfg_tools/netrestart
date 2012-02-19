@@ -1,0 +1,7 @@
+#!/bin/sh
+
+for pid in `pgrep dhcpcd`; do sudo kill -9 $pid; done
+
+sudo dhcpcd
+sudo /etc/rc.d/net-profiles restart
+

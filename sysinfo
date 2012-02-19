@@ -1,0 +1,60 @@
+#! /bin/bash
+#
+# Sytem info script.
+# Created by Rupp
+
+# Colors if used
+blue="\033[1;34m"
+green="\033[1;32m"
+red="\033[1;31m"
+bold="\033[1;37m"
+reset="\033[0m"
+
+DATE=$(date | awk '{print $2,$3,$4}')
+UPTIME=$(uptime | awk '{print $3,$4,$5}' | sed 's/,$//')
+KERNEL=$(uname -r)
+CPU=$(top -b -n 1 | grep '^Cpu' | awk '{print $2+$3"%"}')
+TEMP=$(acpi -t | awk '{print $4}' | tr -d '.0')
+#TEMP=$(cat /proc/acpi/thermal_zone/*/temperature | awk '{print $2}')C
+#TEMP=$(sensors |grep "temp1" |awk '{print $2}' |sed 's/+//')
+MEM=$(free -m | grep '^Mem' |awk '{print $2"MB ",$4"MB "}')
+SWAP=$(free -m | grep '^Swap' |awk '{print $2"MB ",$4"MB "}')
+ROOT=$(df -h |grep "dev/sda3" | awk '{ print $2," "$3," "$4}')
+HOME=$(df -h |grep "dev/sda4" | awk '{ print $2," "$3," "$4}')
+USB=$(df -h |grep "dev/sdb1" | awk '{ print $2," "$3," "$4}')
+#USB=$(df -h /dev/sdb1 | grep / | cut -b12-40 | sed 's/^ *//')
+NET=$(iwconfig wlan0 2>&1 | awk -F '"' '/ESSID/ {print $2}')
+NUP=$(ifconfig eth0 2>&1 | grep 'TX bytes' | awk '{print $7,$8}'| sed 's/( *//g;s/) *//')
+NDOWN=$(ifconfig eth0 2>&1 | grep 'TX bytes' | awk '{print $3,$4}'| sed 's/( *//g;s/) *//')
+PACK=$(pacman -Q | wc -l)
+AUR=$(pacman -Qm | wc -l)
+CACHE=$(du -sh /var/cache/pacman/pkg | awk '{print $1}')
+
+echo Date: $DATE 
+echo Uptime: $UPTIME
+echo Kernel: $KERNEL
+echo
+echo "CPU: $CPU Temp: $TEMP"
+echo
+echo "      Total  Free"
+echo "Mem:  $MEM"
+echo "Swap: $SWAP"
+echo
+echo "      Total Used  Free"
+echo "Root: $ROOT"
+echo "Home: $HOME"
+if [ -e /dev/sdb1 ];
+then
+echo "USB:  $USB"
+else
+echo "USB:  Unplugged"
+fi
+echo
+#echo "Network: $NET"
+echo "Total Up:   $NUP"
+echo "Total Down: $NDOWN"
+echo
+echo "Package Info"
+echo "Installed:  $PACK"
+echo "Cache Size: $CACHE"
+echo

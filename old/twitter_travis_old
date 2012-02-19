@@ -1,0 +1,4 @@
+#!/bin/bash
+
+curl -s http://twitter.com/statuses/user_timeline/52996298.rss | ack "<description>" | sed 's/<\/*description>//g' | perl -ne 'binmode STDOUT,":utf8";s/&#([0-9]*);/pack("U",$1)/eg;print'
+

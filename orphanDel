@@ -1,0 +1,9 @@
+#!/bin/bash
+
+orphs=($(pacman -Qdtq))
+echo ${orphs[*]} >&2
+
+read -p "Do you want to remove these packages? [y/N] " ans
+yn=${ans:0:1}
+
+[ "${yn,}" == y ] && sudo pacman -R --noconfirm ${orphs[*]}

@@ -1,0 +1,33 @@
+#!/bin/bash
+# Author: Jeffrey Vandenborne
+# Year: 2010
+# Description: Swap 2 files' contents instantly by switching their file names
+
+if [ ! $# -eq 2 ]; then
+    echo "You need to specify 2 files"
+    exit
+fi
+
+# These are actually not even needed
+# Variables
+# FILE1="$1"
+# FILE2="$2"
+
+if [ ! -f "$1" ]; then
+    echo "File 1 is not a file"
+    exit
+fi
+
+if [ ! -f "$2" ]; then
+    echo "File 2 is not a file"
+    exit
+fi    
+
+# do the renaming
+CUR_INDEX=1
+REPLACE=tmp_rep_1
+while [ -f "$REPLACE" ]; do
+    CUR_INDEX=$(( $CUR_INDEX + 1 ))
+    REPLACE=${REPLACE/%[0-9]*/$CUR_INDEX}
+done
+

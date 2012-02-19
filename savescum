@@ -1,0 +1,16 @@
+#!/bin/sh
+
+for pid in `pgrep nethack`; do 
+    kill -9 $pid
+done
+
+if [ "$1" == "-s" ]; then
+    echo "cp /usr/share/nethack/save/3$2.gz ~/tmp"
+    sudo cp /usr/share/nethack/save/3$2.gz ~/tmp
+    nethack -u $2
+elif [ "$1" == "-l" ]; then
+    echo "cp ~/tmp/3$2.gz /usr/share/nethack/save/"
+    sudo cp ~/tmp/3$2.gz /usr/share/nethack/save/
+    nethack -u $2
+fi
+

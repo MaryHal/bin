@@ -1,0 +1,24 @@
+#!/bin/sh
+
+echo "Click on window"
+id=$(xdotool selectwindow)
+
+echo "Remember to copy something to say first..."
+
+if [ -z $1 ]; then
+    echo "Repeat How Many Times?"
+    read -r repeat
+else
+    repeat="$1"
+fi
+
+#echo "Repeat: "
+#read -r phrase
+
+for i in $(seq $repeat); do
+    #xdotool windowfocus "$id"
+    #xdotool type --window "$id" "$phrase"
+    xdotool key --window "$id" ctrl+v "Return"
+    #sleep .5s
+done
+

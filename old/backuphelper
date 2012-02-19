@@ -1,0 +1,33 @@
+#!/bin/sh
+# TODO: Don't backup every single little thing every time this is run. Try do
+# do something that will make it so it will be a bit more intelligent
+# Oh yeah, and also add a restoration feature. 
+# Bah, this may call for an ENTIRE REWRITE(madness)!
+# Maybe in python? or shall i learn perl for this (seems pretty reliable. I
+# mean, it was originally designed to handle i/o, right? This is that.
+# Oh yeah, for FAT32 drives(which is what necessitated the "split" command...this would break if i didn't have enough space on my hard drive here.
+
+
+# This isn't a very pretty script...
+if [ -z $1 ]; then
+    dest="/mnt/external/sanford_backup"
+fi
+
+# This script needs to have root access.
+. "/home/sanford/bin/lib/rootCheck.sh"
+rootCheck
+
+echo "Making copies of package list (explicit): pacman -Qeq"
+pacman -Qeq > ~/pkglist_explicit
+
+echo "Making copies of package list (explicit): pacman -Qmq"
+pacman -Qmq > ~/pkglist_aur
+
+echo "Creating backup archive of '/home/sanford/' at '$dest'"
+sudo tar -cvf "$dest/archlinux.tar" "/home/sanford/"
+
+echo "Creating backup archive of '/dev/sda3' at '$dest'"
+sudo tar -cvf "/home/sanford/shared.tar" "/mnt/shared/"
+split -b 4G -d "/home/sanford/shared.tar" "/mnt/shared/shared.tar-"
+
+

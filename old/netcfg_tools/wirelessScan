@@ -1,0 +1,87 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+sub trim($)
+{
+	my $string = shift;
+	$string =~ s/^\s+//;
+	$string =~ s/\s+$//;
+	return $string;
+}
+
+sub isInterfaceUp
+{
+    print "Checking kernel interface (ifconfig)...\n";
+    my $interfaceUp = `ifconfig`;
+    if ($interfaceUp !~ m/eth1/)
+    {
+        print "Activating kernel interface (sudo ifconfig eth1 up)...";
+        system("sudo ifconfig eth1 up");
+    }
+}
+
+my %defaults = (
+    "ESSID"          , "~~~",
+    "Address"        , "00:00:00:00:00:00",
+    #"Frequency"      , "",
+    "Quality"        , "0/5",
+    "Encryption key" , "none",
+    "IE"             , "none",
+);
+
+my %keywords = (
+    "ESSID"          , qr/ESSID:"(.*)"/,
+    "Address"        , qr/.*Address: (.*)/,
+    #"Frequency"      , qr//,
+    "Quality"        , qr/Quality:(\d\/\d)/,
+    "Encryption key" , qr/Encryption key:(.*)/,
+    "IE"             , qr/IE:.*(WPA.)/,
+);
+
+# capture 'dat output
+isInterfaceUp();
+print "Scanning for networks (iwlist eth1 scan)...\n";
+my $rawList = `sudo iwlist eth1 scan`;
+print "\n";
+
+my @networkList = ();
+
+foreach my $line (split('\n', $rawList))
+{
+    $line = trim($line);
+    if ($line =~ /Cell/)
+    {
+        push(@networkList, {});
+    }
+
+    for my $keyword (keys %keywords)
+    {
+        if (@networkList > 0 && !defined $networkList[-1]{$keyword})
+        {
+            if ($line =~ m/$keywords{$keyword}/)
+            {
+                $networkList[-1]{$keyword} = "$1";
+            }
+        }
+    }
+}
+
+for my $keyword (keys %keywords)
+{
+    if (!defined $networkList[-1]{$keyword})
+    {
+        $networkList[-1]{$keyword} = "$defaults{$keyword}";
+    }
+}
+
+for my $href ( @networkList ) 
+{
+    for my $role ( keys %keywords ) {
+        #print "$role=$href->{$role} ";
+        print "$href->{$role}  ";
+    }
+    print "\n";
+}
+

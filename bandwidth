@@ -1,0 +1,164 @@
+#!/usr/bin/python
+import sys,time,collections,os,signal
+argc=len(sys.argv)
+def printusage():
+    print ("""ifpy - show interface transfer rates with moving average
+        usage: ifpy -[cnm] [-i interval] [-s seconds] [-a samples] <interface>
+        flags:
+            -c : turn off color
+            -n : adds newline at end of lines
+            -m : csv output 
+            -i <seconds> : interval between samples/updates (can be <1)
+            -s <seconds> : seconds of samples to average
+            -a <samples> : number of samples to average
+            
+            default is -i 1 -s 10
+            """)
+
+def c_c(a,b):
+        print()
+        sys.exit()
+signal.signal(signal.SIGINT, c_c)
+def colored(txt,color):
+    cnames=[("red"),("green"),("yellow"),("blue"),("magenta"),("cyan")]
+    ccodes=[("\033[31m"),("\033[32m"),("\033[33m"),("\033[34m"),("\033[35m"),("\033[36m")]
+    try:
+        return "%s%s%s"%(ccodes[cnames.index(color)],txt,"\033[0m")
+    except:
+        return txt
+if argc<2:
+	print ("need an interface")
+	sys.exit()
+args=["iface","i","a","s","h","c","m","n"]
+argvals=["",1.0,10,0,-1,-1,-1,-1]
+i=0
+while i<argc:
+    carg=sys.argv[i]
+    clen=len(carg)
+    if carg[0]=="-":
+        argflag=carg[1:2]
+        try:
+            argindex=args.index(argflag)
+        except:
+            print ("%s is not a valid flag"%argflag)
+            printusage()
+            sys.exit()
+        if argvals[argindex]==-1:
+            argval=1
+            if clen>2:
+                argflag2=carg[2:3]
+                try:
+                    argindex2=args.index(argflag2)
+                except:
+                    print ("%s is not a valid flag"%argflag2)
+                    printusage()
+                    sys.exit()
+                argvals[argindex2]=1
+                if clen>3:
+                    argflag3=carg[3:4]
+                    try:
+                        argindex3=args.index(argflag3)
+                    except:
+                        print ("%s is not a valid flag"%argflag3)
+                        printusage()
+                        sys.exit()
+                    argvals[argindex3]=1
+
+                    
+                    
+        else:
+            if clen==2:
+                try:
+                    argval=float(sys.argv[i+1])
+                    i=i+1
+                except ValueError:
+                    print ("error: -%s requires a numeric flag"%argflag)
+                    sys.exit()
+                except IndexError:
+                    print ("error: -%s requires an flag"%argflag)
+                    sys.exit()
+            else:
+                try:
+                    argval=float(carg[2:clen])
+                except ValueError:
+                   print ("error: -%s requires a numeric flag"%argflag)
+                   sys.exit()
+                except IndexError:
+                   print ("error: -%s requires an flag"%argflag)
+                   sys.exit()
+        argvals[argindex]=argval
+    else:
+        argvals[0]=sys.argv[i]
+    i=i+1
+if argvals[0]=="":
+    print ("need an interface")
+    sys.exit()
+interface=argvals[0]
+interval=argvals[1]
+avg=int(argvals[2])
+seconds=argvals[3]
+if argvals[4]==1:
+    printusage()
+    sys.exit()
+
+
+sol="\r"
+rxformat="RX:%.2fKB/s"
+rxcolor='green'
+seperator=" "
+txformat="TX:%.2fKB/s"
+txcolor='red'
+eol=""
+if argvals[5]==1:
+    rxcolor=''
+    txcolor=''
+if argvals[6]==1:
+    rxformat="%f"
+    txformat="%f"
+    rxcolor=''
+    txcolor=''
+    seperator=","
+    sol=""
+    eol="\n"
+if argvals[7]==1:
+    sol=""
+    eol="\n"
+
+
+
+if seconds!=0:
+    avg=round(seconds/interval)
+avg=avg+1
+ifpath="/sys/class/net/%s/statistics/"%interface
+try:
+    f=open("%s../uevent"%ifpath,'r')
+    f.close()
+except:
+    print ("can't find interface %s "%interface)
+    sys.exit()
+txfile=open("%stx_bytes"%ifpath,'r')
+rxfile=open("%srx_bytes"%ifpath,'r')
+rxscale=1000
+txscale=1000
+txbuf=collections.deque('',avg)
+rxbuf=collections.deque('',avg)
+nti=time.time()
+txbuf.appendleft((int(txfile.read()),nti))
+rxbuf.appendleft((int(rxfile.read()),nti))
+while 1:
+    rxfile.seek(0)
+    txfile.seek(0)
+    nti=time.time()
+    newtx=int(txfile.read())
+    newrx=int(rxfile.read())
+    txbuf.appendleft((newtx,nti))
+    rxbuf.appendleft((newrx,nti))
+    buflen=len(txbuf)-1
+    oldtx=txbuf[buflen]
+    oldrx=rxbuf[buflen]
+    txavg=(newtx-oldtx[0])/(nti-oldtx[1])/txscale
+    rxavg=(newrx-oldrx[0])/(nti-oldrx[1])/rxscale
+    sys.stdout.write("%s%s%s%s%s"%(sol,colored(rxformat%rxavg,rxcolor),seperator,colored(txformat%txavg,txcolor),eol))
+    sys.stdout.flush()
+    time.sleep(interval)
+

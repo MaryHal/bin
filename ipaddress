@@ -1,0 +1,5 @@
+#!/bin/sh
+
+ip_string=`curl -fs http://checkip.dyndns.org:8245/`
+echo `expr "$ip_string" : '^.*[^0-9\s\.]\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\).*$'`
+

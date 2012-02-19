@@ -1,0 +1,4 @@
+#!/bin/sh
+
+$BROWSER "http://www.wordreference.com/$2$3/$1"
+

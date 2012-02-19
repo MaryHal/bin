@@ -1,0 +1,45 @@
+#!/usr/bin/ruby
+
+raise 'Must run as root' unless Process.uid == 0
+
+def echo( target, value )
+
+    if File.exist?( target )
+        File.open( target, "wb" ) { |fp| fp.puts value }
+    else
+        if ARGV[ 0 ] == '--debug'
+            puts "warning: #{target} not found"
+        end
+    end
+
+end
+
+echo '/proc/sys/net/ipv4/tcp_congestion_control',       'vegas'
+echo '/proc/sys/vm/dirty_ratio',                        '30'
+echo '/sys/block/sda/queue/scheduler',                  'deadline'
+echo '/sys/module/snd_hda_intel/parameters/power_save', '1'
+echo '/proc/sys/vm/swappiness',                         '5'
+echo '/proc/sys/vm/dirty_writeback_centisecs',          '1500'
+echo '/sys/class/drm/card0/device/power_method',        'dynpm'
+
+Dir.entries( '/sys/class/scsi_host' ).each do |entry|
+    next unless entry =~ /host\d/
+    echo "/sys/class/scsi_host/#{entry}/link_power_management_policy", 'min_power'
+end
+
+=begin
+Dir.entries( '/sys/bus/usb/devices' ).each do |entry|
+    next if entry == '.' || entry == '..'
+    echo "/sys/bus/usb/devices/#{entry}/power/autosuspend", '1'
+    echo "/sys/bus/usb/devices/#{entry}/power/level", 'auto'
+end
+=end
+
+Dir.entries( '/sys/bus/pci/devices' ).each do |entry|
+    next if entry == '.' || entry == '..'
+    echo "/sys/bus/pci/devices/#{entry}/power/control", 'auto'
+end
+
+`ethtool -s eth0 wol d`
+
+exit 0

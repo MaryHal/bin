@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "Downloading and ranking mirrors"
+curl 'http://www.archlinux.org/mirrorlist/?country=United+States&protocol=ftp&protocol=http' | sed 's/^#Server/Server/' | rankmirrors - > /tmp/mirrorlist.ranked
+
+echo "Copying '/tmp/mirrorlist.ranked' -> '/etc/pacman.d/mirrorlist'"
+sudo cp /tmp/mirrorlist.ranked /etc/pacman.d/mirrorlist
+

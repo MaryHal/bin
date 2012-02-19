@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+""" Retrieve latest XKCD in a nicely
+named image
+
+"""
+
+import os
+import json
+import urllib.request, urllib.parse, urllib.error
+
+XKCD_JSON_URL = "http://xkcd.com/info.0.json"
+
+def get_latest_xkcd(output_path):
+    """ Fetch json information from xckd, then
+    create an img with the correct name in
+    output_path.
+
+    Return the full path of the newly retrieved image
+
+    """
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
+    url_obj = urllib.request.urlopen(XKCD_JSON_URL)
+    data = url_obj.read()
+    url_obj.close()
+
+    xkcd_info = json.loads(data.decode("utf8"))
+    img_url = xkcd_info["img"]
+    title   = xkcd_info["safe_title"]
+
+    output_img = os.path.join(output_path, title + ".png")
+    urllib.request.urlretrieve(img_url, output_img)
+
+    return output_img
+
+def main():
+    output_img = get_latest_xkcd("/tmp")
+    print ("Latest XKCD comic retrieved in", output_img)
+    os.system("$IMGVIEWER \"" + output_img + "\"")
+
+if __name__ == "__main__":
+    main()
+

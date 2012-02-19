@@ -1,0 +1,16 @@
+#/bin/zsh
+# This scripts generates a list of your installed packages,
+# sorted by the number of each packages' number of deps,
+# most deps at the top
+# (It checks the depends file in the folder of each package
+# in the local package database)
+
+for i in $(/bin/ls -1 -d /var/lib/pacman/local/*)
+do
+ numberdeps=$(perl -00 -ne 'print if /%DEPENDS/' $i/depends | sed -e '/^$/d' -e '/DEPENDS/d' | wc -l)
+ echo "$numberdeps $(basename $i)" >> tmpfile
+done
+sort -g --reverse tmpfile > pkgbydeps
+rm tmpfile
+echo "File created."
+

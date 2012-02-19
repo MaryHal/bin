@@ -1,0 +1,23 @@
+#!/usr/bin/ruby -w
+require "fileutils"
+#
+# Convert file names to something more non-ugly.
+#
+# Examples:
+#   nicefile.rb "Some Ugly File Name  <<by TheMaster!>>.JPG"
+#   gives: some_ugly_file_name_by_themaster_.jpg
+#
+#   nicefile.rb "WHOtheFUCK_named this file?????%%"
+#   gives: whothefuck_named_this_file
+#
+
+#before = ARGV[0]
+
+ARGV.each do|a|
+    before = a
+    #after = before.gsub(/\s{1,}/, '_').gsub(/[^\w.]/, '').downcase
+    after = before.gsub(/\s{1,}/, '_').gsub(/[^\w.]/, '')
+
+    FileUtils.mv before, after
+end
+
