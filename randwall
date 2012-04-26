@@ -10,7 +10,7 @@ def getRandomFile(dir):
     return random.choice(os.listdir(dir))
 
 if __name__ == "__main__":
-    wallpaperDir = "/media/Shared/wallpapers/current/"
+    wallpaperDir = "/media/shared/wallpapers/current/"
     wallpaperFile = getRandomFile(wallpaperDir)
 
     parser = OptionParser()

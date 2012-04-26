@@ -41,9 +41,9 @@ my %keywords = (
 );
 
 # capture 'dat output
-isInterfaceUp();
+#isInterfaceUp();
 print "Scanning for networks (iwlist eth1 scan)...\n";
-my $rawList = `sudo iwlist eth1 scan`;
+my $rawList = `sudo iwlist wlan0 scan`;
 print "\n";
 
 my @networkList = ();

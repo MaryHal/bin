@@ -7,16 +7,10 @@ brightness="0
 40
 60
 80
-100
-save"
+100"
+
 
 value=$(menu "Set: " "$brightness")
 
-if [ -n "$value" ]; then
-    if [ "$value" == "save" ]; then
-        xset dpms force off
-    else
-        xbacklight = $value
-    fi
-fi
+xbacklight = $value
 

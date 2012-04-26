@@ -77,7 +77,6 @@ def printTable(cellList):
     for cell in cellList:
         print ("%s%s | %s | %s | %s%s | %d" % (cell.name, " " * (longest - len(cell.name)), cell.address, cell.quality, cell.encryption, " " * (4 - len(cell.encryption)), cell.profileExists))
 
-# OH MY GOD this program is way too much of a hack
 def main():
     #if checkPrivileges() != "root":
         #print "Script needs root access."
@@ -100,7 +99,7 @@ def main():
 
     else:
         print ("Scanning for networks...")
-        os.system("sudo iwlist eth1 scan > /tmp/networklist")
+        os.system("sudo iwlist wlan0 scan > /tmp/networklist")
         file = open("/tmp/networklist", "r")
 
         print ("Parsing network list")

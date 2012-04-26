@@ -1,9 +1,14 @@
 #!/bin/bash
 
-if [ -f $HOME/.dmenurc ]; then
-    . $HOME/.dmenurc
+
+if [ "$(ps --no-headers -C X)" ]; then
+    if [ -f $HOME/.dmenurc ]; then
+        . $HOME/.dmenurc
+    else
+        DMENU="dmenu -i"
+    fi
 else
-    DMENU="dmenu -i"
+    DMENU="slmenu -i"
 fi
 
 ###################

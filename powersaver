@@ -20,7 +20,13 @@ echo '/sys/block/sda/queue/scheduler',                  'deadline'
 echo '/sys/module/snd_hda_intel/parameters/power_save', '1'
 echo '/proc/sys/vm/swappiness',                         '5'
 echo '/proc/sys/vm/dirty_writeback_centisecs',          '1500'
+echo '/proc/sys/vm/laptop_mode',                        '5'
 echo '/sys/class/drm/card0/device/power_method',        'dynpm'
+
+echo '/proc/sys/kernel/nmi_watchdog',                   '0'
+echo '/sys/devices/system/cpu/sched_mc_power_savings',  '1'
+
+echo '/sys/module/snd_hda_intel/parameters/power_save', '10'
 
 Dir.entries( '/sys/class/scsi_host' ).each do |entry|
     next unless entry =~ /host\d/
