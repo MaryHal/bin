@@ -1,0 +1,11 @@
+#!/bin/sh
+
+source /home/sanford/bin/lib/dmenu_helpers.sh
+
+items="Hello
+Hi
+Howdy"
+
+buildPipe -p "MenuTitle:"
+pipeMenu "$items"
+

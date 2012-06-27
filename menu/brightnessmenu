@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source /home/sanford/bin/lib/dmenu_helpers.sh
+
+brightness="0
+20
+40
+60
+80
+100"
+
+
+value=$(menu "Set: " "$brightness")
+
+xbacklight = $value
+

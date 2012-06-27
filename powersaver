@@ -3,7 +3,6 @@
 raise 'Must run as root' unless Process.uid == 0
 
 def echo( target, value )
-
     if File.exist?( target )
         File.open( target, "wb" ) { |fp| fp.puts value }
     else
@@ -25,6 +24,7 @@ echo '/sys/class/drm/card0/device/power_method',        'dynpm'
 
 echo '/proc/sys/kernel/nmi_watchdog',                   '0'
 echo '/sys/devices/system/cpu/sched_mc_power_savings',  '1'
+echo '/sys/devices/system/cpu/sched_smt_power_savings', '1'
 
 echo '/sys/module/snd_hda_intel/parameters/power_save', '10'
 
@@ -46,6 +46,13 @@ Dir.entries( '/sys/bus/pci/devices' ).each do |entry|
     echo "/sys/bus/pci/devices/#{entry}/power/control", 'auto'
 end
 
-`ethtool -s eth0 wol d`
+#`ethtool -s eth0 wol d`
+
+# Disable webcam
+`modprobe -r uvcvideo`
+
+# Disable bluetooth
+`modprobe -r btusb`
+`modprobe -r bluetooth`
 
 exit 0

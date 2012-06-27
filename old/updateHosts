@@ -1,0 +1,129 @@
+#!/bin/bash
+
+## NECESSARY VARIABLES
+
+# temporary direct where files will be downloaded and unzipped
+tmpdir=/dev/shm
+
+# final resulting composite file.
+#hostsfile=/etc/hosts.adblock # for use with dnsmasq
+hostsfile=/var/adsuck/hosts # for use without dnsmasq
+
+# commands to execute at the end of the process
+dnsmasq_restart() {          #
+/etc/rc.d/dnsmasq restart   # if using dnsmasq
+}                                      #
+#dnsmasq_restart() { #
+#/bin/true                   # if NOT using dnsmasq
+#}                             #
+
+
+## Subroutines
+addurl() {
+echo "$n: $@..."
+curl -s -o $tmpdir/hosts.adblock.d/hosts.adblock.$n "$@"
+let "n+=1"
+}
+
+addzip() {
+[ -d $tmpdir/tmp ] && rm -r $tmpdir/tmp
+mkdir $tmpdir/tmp
+echo "$n: $@..."
+curl -s -o $tmpdir/tmp/hosts.adblock.zip "$@"
+cd $tmpdir/tmp
+echo "     Extracting..."
+ionice -c 3 nice -n 19 unzip -jq hosts.adblock.zip
+grep -Ih -- "^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}" ./* > $tmpdir/hosts.adblock.d/hosts.adblock.$n
+cd /tmp
+rm -r $tmpdir/tmp
+let "n+=1"
+}
+
+## Main routine
+[ -d $tmpdir/hosts.adblock.d ] && rm -r $tmpdir/hosts.adblock.d
+mkdir $tmpdir/hosts.adblock.d
+cp $hostsfile $tmpdir/hosts.adblock.d/hosts.adlbock.0
+n=1
+
+echo "DOWNLOADING BLACKLISTS:"
+## BLACKLISTS TO DOWNLOAD
+# hphosts main file
+addzip "http://support.it-mate.co.uk/downloads/hphosts.zip"
+
+# hphosts file to block yahoo
+addzip "http://hosts-file.net/download/yahoo_servers.zip"
+
+# hphosts partial file (for updates between main releases)
+addurl "http://hosts-file.net/hphosts-partial.asp"
+
+# hostsfile.org BADHOSTS file (currently defunct?)
+addzip "http://hostsfile.org/Downloads/BadHosts.unx.zip"
+
+# hostsfile.mine.nu
+addzip "http://hostsfile.mine.nu/Hosts.zip"
+
+# the extremely popular mvps hostsfile
+addzip "http://winhelp2002.mvps.org/hosts.zip"
+
+# yoyo.org files
+addurl "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&startdate%5Bday%5D=&startdate%5Bmonth%5D=&startdate%5Byear%5D=&mimetype=plaintext"
+
+# malwaredomainlist.com
+addurl "http://www.malwaredomainlist.com/hostslist/hosts.txt"
+
+# securemecca (should be a mirror of hostsfile.org)
+addurl "http://www.securemecca.com/Downloads/hosts.txt"
+
+# hostsfile.org (mirror of securemecca)
+addurl "http://www.hostsfile.org/Downloads/hosts.txt"
+
+# defunct? Coming back?
+addurl "http://someonewhocares.org/hosts/hosts"
+
+# sysctl.org
+addurl "http://sysctl.org/cameleon/hosts"
+
+# a file specifically for smartphones
+addurl "http://www.ismeh.com/HOSTS"
+
+# another file I randomly found
+addurl "http://www.modyouri.com/adblock_hosts/hosts"
+
+# Process files
+echo "PROCESSING FILES..."
+grep -Ih -- "^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}" $tmpdir/hosts.adblock.d/* |\
+sed -e 's/[[:space:]][[:space:]]*/ /g' -e "s/\r//g" -e "s/\#.*//g" -e "s/ $//g" |\
+sort -u |\
+# WHITELIST
+sed -e "/\.dropbox\.com/d" -e \
+"/ www\.malwaredomainlists\.com/d" -e \
+"/ www\.arcamax\.com/d" -e \
+"/ www\.instructables\.com/d" -e \
+"/ goo\.gl/d" -e \
+"/ www\.reddit\.com/d" -e \
+"/ t\.co/d" -e \
+"/ bit\.ly/d" -e \
+"/ www\.viddler\.com/d" -e \
+"/ viddler\.com/d" -e \
+"/ tinyurl\.com/d" -e \
+"/ www\.pcmag\.com/d" -e \
+"/ www\.forbes\.com/d" -e \
+"/ www\.hydrogenaudio\.org/d" -e \
+"/ www\.flickr\.com/d" -e \
+"/ adjax\.flickr\.yahoo\.com/d" -e \
+"/ l-stat\.livejournal\.com/d" -e \
+"/ stat\.livejournal\.com/d" -e \
+"/\.about\.com/d" -e \
+"/ hosts-file\.net/d" -e \
+"/ community\.livejournal\.com/d" -e \
+"/ netflix\.com/d" -e \
+"/ torrentfreak\.com/d" -e \
+"/\.linkedin\.com/d" -e \
+"/\.espn\.go\.com/d" -e \
+"/ l\.yimg\.com/d" > $hostsfile
+
+# clean up
+echo "CLEANING UP..."
+[ -d $tmpdir/tmp ] && rm -r $tmpdir/tmp
+rm -r $tmpdir/hosts.adblock.d
+dnsmasq_restart
