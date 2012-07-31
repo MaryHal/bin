@@ -1,3 +1,0 @@
-#!/bin/sh
-
-head -1 /var/log/pacman.log

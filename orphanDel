@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# NOOOOO DON'T DO IT
 orphs=($(pacman -Qdtq))
 echo ${orphs[*]} >&2
 
