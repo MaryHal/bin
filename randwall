@@ -24,3 +24,4 @@ if __name__ == "__main__":
     if not options.fake:
         os.system("feh --bg-fill \"%s\"" % wallpaper)
 
+feh --bg-fill $(find /home/sanford/shared/wallpapers/current -type f | shuf -n1)

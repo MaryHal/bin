@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source /home/sanford/bin/lib/dmenu_helpers.sh
+
+wallpaper_dir="/media/shared/wallpapers/current/"
+feh_command="feh --bg-fill"
+
+value=$(ls $wallpaper_dir | $DMENU -l 12)
+
+$feh_command "$wallpaper_dir/$value"
+
