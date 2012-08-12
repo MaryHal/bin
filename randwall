@@ -1,27 +1,28 @@
+#!/bin/bash
 #!/usr/bin/env python
 
-import os
-import sys
-import random
-
-from optparse import OptionParser
-
-def getRandomFile(dir):
-    return random.choice(os.listdir(dir))
-
-if __name__ == "__main__":
-    wallpaperDir = "/media/shared/wallpapers/current/"
-    wallpaperFile = getRandomFile(wallpaperDir)
-
-    parser = OptionParser()
-    parser.add_option("-f", "--fake", action="store_true", dest="fake", help="don't actually set the wallpaper, but print the command used.")
-
-    (options, args) = parser.parse_args()
-
-    wallpaper = wallpaperDir + wallpaperFile
-    print ("Setting Wallpaper: \"%s\"" % wallpaper)
-
-    if not options.fake:
-        os.system("feh --bg-fill \"%s\"" % wallpaper)
+#import os
+#import sys
+#import random
+#
+#from optparse import OptionParser
+#
+#def getRandomFile(dir):
+#    return random.choice(os.listdir(dir))
+#
+#if __name__ == "__main__":
+#    wallpaperDir = "/media/shared/wallpapers/current/"
+#    wallpaperFile = getRandomFile(wallpaperDir)
+#
+#    parser = OptionParser()
+#    parser.add_option("-f", "--fake", action="store_true", dest="fake", help="don't actually set the wallpaper, but print the command used.")
+#
+#    (options, args) = parser.parse_args()
+#
+#    wallpaper = wallpaperDir + wallpaperFile
+#    print ("Setting Wallpaper: \"%s\"" % wallpaper)
+#
+#    if not options.fake:
+#        os.system("feh --bg-fill \"%s\"" % wallpaper)
 
 feh --bg-fill $(find /home/sanford/shared/wallpapers/current -type f | shuf -n1)
