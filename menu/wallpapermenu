@@ -2,10 +2,18 @@
 
 source /home/sanford/bin/lib/dmenu_helpers.sh
 
-wallpaper_dir="/media/shared/wallpapers/current/"
 feh_command="feh --bg-fill"
+wallpaper_dir="/media/shared/wallpapers/current/"
+wallpaper_options=$(ls "$wallpaper_dir" -1Ap | ack -v \/)
+other_options="[Random]
+"
 
-value=$(ls $wallpaper_dir | $DMENU -l 12)
+choice=$(echo "$other_options$wallpaper_options" | $DMENU -l 12 -p "Option: ")
+[ -z "$choice" ] && exit
 
-$feh_command "$wallpaper_dir/$value"
+if [[ "$choice" == "[Random]" ]] ; then
+    $feh_command $(find /home/sanford/shared/wallpapers/current -type f | shuf -n1)
+else
+    $feh_command "$wallpaper_dir/$choice"
+fi
 

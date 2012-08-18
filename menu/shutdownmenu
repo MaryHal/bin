@@ -7,7 +7,7 @@ mainMenu="[Shutdown]
 [Sleep]
 [Lock]
 [Cancel]"
-#[Hibernate] broken because i have no swap space
+#[Hibernate] #defunct
 
 pauseMenu="now
 +60
