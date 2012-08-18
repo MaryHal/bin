@@ -13,7 +13,7 @@ if [[ "$choice" == "[Wifi-Select]" ]]; then
     urxvtc -e "sudo wifi-select"
 else
     sudo netcfg -a
-    sudo netcfg "$choice"
+    sudo netcfg "$choice"
 fi
 
 
