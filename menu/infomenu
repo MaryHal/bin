@@ -17,5 +17,5 @@ acpi -b
 #
 #(echo "$info" > "$PIPE")
 
-echo "$info" | $DMENU -l 8 -p Information:
+echo "$info" | $DMENU -l 8
 

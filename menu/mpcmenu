@@ -38,7 +38,7 @@ playlistOptions="[Add]
 ##### Main #####
 ################
 
-action=$(menu "Options:" "$mainMenu")
+action=$(menu "Option:" "$mainMenu")
 #action=$($DMENU -p "Options:" <<< "$mainMenu")
 case "$action" in
     '[Select]')

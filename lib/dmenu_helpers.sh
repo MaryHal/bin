@@ -21,7 +21,7 @@ buildPipe()
 {
     if [ ! -e "$PIPE" ]; then
         mkfifo "$PIPE"
-        ($DMENU "$@" < "$PIPE" 
+        ($DMENU "$@" < "$PIPE"
         rm -f "$PIPE") &
     fi
 }
@@ -35,7 +35,7 @@ pipeMenu()
 # Feeding menu items and a prompt to Dmenu the regular way gets messy.
 # To save sanity, this function makes it as simple as:
 #   menu "Your Prompt" "Item A" ["Item B" "Item C" ...]
-menu () 
+menu ()
 {
     # We grab the prompt message...
     prompt="$1"
@@ -57,13 +57,13 @@ menu ()
 }
 
 # We can use menu() function for yes/no prompts.
-confirm () 
+confirm ()
 {
     menu "$*" 'No' 'Yes'
 }
 
 # And we can even use it for a simple notice.
-alert () 
+alert ()
 {
     menu "$*" 'OK'
 }

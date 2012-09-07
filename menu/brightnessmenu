@@ -2,7 +2,7 @@
 
 source /home/sanford/bin/lib/dmenu_helpers.sh
 
-brightness="0
+brightness="10
 20
 40
 60
@@ -10,7 +10,7 @@ brightness="0
 100"
 
 
-value=$(menu "Set: " "$brightness")
+value=$(menu "Option: " "$brightness")
 
 xbacklight = $value
 

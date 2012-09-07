@@ -1,4 +1,7 @@
 #!/bin/bash
+
+feh --bg-fill $(find /home/sanford/shared/wallpapers/current -type f | shuf -n1)
+
 #!/usr/bin/env python
 
 #import os
@@ -25,4 +28,3 @@
 #    if not options.fake:
 #        os.system("feh --bg-fill \"%s\"" % wallpaper)
 
-feh --bg-fill $(find /home/sanford/shared/wallpapers/current -type f | shuf -n1)
