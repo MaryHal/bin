@@ -6,7 +6,7 @@ netchoices=$(ls /etc/network.d/ -1Ap | ack -v \/)
 other="
 [Wifi-Select]"
 
-choice="$(echo "$netchoices $other" | $DMENU -p "Connect To: ")"
+choice="$(echo "$netchoices $other" | $DMENU -p "Option: ")"
 [ -z "$choice" ] && exit
 
 if [[ "$choice" == "[Wifi-Select]" ]]; then

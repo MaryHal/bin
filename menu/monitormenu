@@ -9,7 +9,7 @@ options="[Laptop]
 [On]
 [Off]"
 
-action=$(menu "Display:" "$options")
+action=$(menu "Option: " "$options")
 case "$action" in
     *'Laptop'*)
         xrandr --output LVDS1 --mode 1366x768

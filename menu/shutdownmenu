@@ -20,7 +20,7 @@ pauseMenu="now
 +2
 +1"
 
-action=$(menu "Action: " "$mainMenu")
+action=$(menu "Option: " "$mainMenu")
 [ -z "$action" ] && exit
 
 case "$action" in

@@ -6,7 +6,7 @@ mainMenu="[Chapter]
 [DvdNav]
 [Nav+MouseMovement]"
 
-action=$(menu "Option:" "$mainMenu")
+action=$(menu "Option: " "$mainMenu")
 case "$action" in
     *'Chapter'*)
         chapter=`menu "Chapter #:"`
