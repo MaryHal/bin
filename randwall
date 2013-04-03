@@ -3,7 +3,7 @@
 feh --bg-fill $(find /home/sanford/shared/wallpapers/current -type f | shuf -n1)
 
 #!/usr/bin/env python
-
+#
 #import os
 #import sys
 #import random

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /home/sanford/bin/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 feh_command="feh --bg-fill"
 wallpaper_dir="/media/shared/wallpapers/current/"

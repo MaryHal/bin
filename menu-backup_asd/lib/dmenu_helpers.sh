@@ -1,36 +1,22 @@
 #!/bin/bash
 
 # We're gonna guard against multiple instances of dmenu
-PIPE="/tmp/dmenupipe"
+#PIPE="/tmp/dmenupipe"
 
-if [ "$(ps --no-headers -C X)" ]; then
-    if [ -f $HOME/.dmenurc ]; then
-        . $HOME/.dmenurc
-    else
-        DMENU="dmenu -i"
-    fi
-else
-    DMENU="slmenu -i"
-fi
+#if [ "$(ps --no-headers -C X)" ]; then
+#    if [ -f $HOME/.dmenurc ]; then
+#        . $HOME/.dmenurc
+#    else
+#        DMENU="dmenu -i"
+#    fi
+#else
+#    DMENU="slmenu -i"
+#fi
+source $HOME/bin/menu/lib/dmenurc
 
 ###################
 ## Functions
 ###################
-
-buildPipe()
-{
-    if [ ! -e "$PIPE" ]; then
-        mkfifo "$PIPE"
-        ($DMENU "$@" < "$PIPE"
-        rm -f "$PIPE") &
-    fi
-}
-
-pipeMenu()
-{
-    #(echo "$@" | $DMENU) > "$PIPE"
-    (echo "$@" | $DMENU -p "asdf")
-}
 
 # Feeding menu items and a prompt to Dmenu the regular way gets messy.
 # To save sanity, this function makes it as simple as:

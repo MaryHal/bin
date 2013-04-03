@@ -1,11 +1,12 @@
 #!/bin/bash
 
-source /home/sanford/bin/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 # Menu Items
 options="[Laptop]
 [External]
-[Two]
+[AddRight]
+[AddLeft]
 [On]
 [Off]"
 

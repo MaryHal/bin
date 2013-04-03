@@ -3,7 +3,7 @@
 # TODO:
 #   - Removing items from a playlist
 
-source /home/sanford/bin/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 # Menu Items
 mainMenu="[Select]
@@ -15,6 +15,7 @@ mainMenu="[Select]
 [Playlist]
 [Previous]
 [Next]
+[Seek]
 [Replay]
 [Random]
 [Repeat]
@@ -28,6 +29,17 @@ playlistOptions="[Add]
 [Save]
 [Load]
 [Delete]"
+
+seekOptions="0%
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%"
 
 
 #[Random: `mpc | sed 's/volume://' | sed -n 3p | awk '{print $5}'`]
@@ -111,6 +123,12 @@ case "$action" in
     ;;
     '[Next]')
         mpc next -q
+    ;;
+    '[Seek]')
+        seek=$(menu "Seek: " "$seekOptions")
+        if [ -n "$seek" ]; then
+            mpc seek "$seek"
+        fi
     ;;
     '[Replay]')
         mpc stop -q

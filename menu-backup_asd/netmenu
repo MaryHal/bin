@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source /home/sanford/bin/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 netchoices=$(ls /etc/network.d/ -1Ap | ack -v \/)
 other="
@@ -15,5 +15,3 @@ else
     sudo netcfg -a
     sudo netcfg "$choice"
 fi
-
-

@@ -3,14 +3,14 @@
 import os
 import sys
 
-packageString = ''
+helper = "aura"
 
 def queryPackage(package):
-    os.system("pacman -Qi " + package)
+    os.system(helper + " -Qi " + package)
 
 def removePackage(package):
-    print ("Command: sudo pacman -Rsn " + package)
-    os.system("sudo pacman -Rsn " + package)
+    print ("Command: sudo " + helper + " -Rsn " + package)
+    os.system("sudo " + helper + " -Rsn " + package)
 
 # Generate a list of packages we would maybe like to uninstall
 os.system("pacman -Qetq > /tmp/explicit_packages")

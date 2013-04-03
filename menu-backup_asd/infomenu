@@ -1,10 +1,10 @@
 #!/bin/sh
 
-source /home/sanford/bin/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 info=$(
-date +"%a %d.%m // %I:%M %P"
-acpi -b
+    date +"%a %B %d, %I:%M %p"
+    acpi -V
 )
 
 #PIPE="/tmp/infopipe"

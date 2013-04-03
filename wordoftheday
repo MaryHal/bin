@@ -1,3 +1,4 @@
 #! /bin/sh
 
 curl -s http://dictionary.reference.com/wordoftheday/wotd.rss | perl -lne 'print $1 if m,<description>(.*?)</description>,' | tail -1
+
